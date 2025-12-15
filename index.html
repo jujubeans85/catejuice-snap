@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CrateJuice™ Snap</title>
+  <style>
+    :root{--bg:#0b0b0d;--card:#141418;--ink:#f4f1ea;--muted:#b9b3a8;--line:#24242a;--accent:#e8b86d;--r:18px}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-serif,Georgia,serif}
+    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:var(--r);padding:22px}
+    h1{margin:0 0 10px;font-size:34px;letter-spacing:.2px}
+    p{margin:10px 0;color:var(--muted);line-height:1.5}
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media(min-width:900px){.grid{grid-template-columns:1fr 1.2fr}}
+    .drop{
+      border:1px dashed rgba(232,184,109,.55);
+      border-radius:var(--r);
+      padding:18px;
+      min-height:260px;
+      display:flex;align-items:center;justify-content:center;
+      text-align:center;
+      background:rgba(232,184,109,.05);
+    }
+    .drop.drag{background:rgba(232,184,109,.12)}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      border:1px solid rgba(232,184,109,.45);
+      background:rgba(232,184,109,.10);
+      color:var(--ink);
+      padding:10px 14px;border-radius:999px;
+      cursor:pointer;user-select:none;
+    }
+    .btn:hover{background:rgba(232,184,109,.16)}
+    input{display:none}
+    .preview{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      background:#0e0e12;
+    }
+    .preview img{width:100%;height:auto;display:block}
+    footer{margin-top:18px;opacity:.65;font-size:13px}
+    .tiny{font-size:12px;opacity:.75}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>CrateJuice™ Snap</h1>
+      <p>Drop one photo. It appears. That’s the whole religion.</p>
+    </div>
+
+    <div style="height:14px"></div>
+
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin:0 0 10px;font-size:20px">Drop a photo</h2>
+        <div id="drop" class="drop">
+          <div>
+            <div style="font-size:16px;margin-bottom:10px">Drag & drop here</div>
+            <label class="btn" for="file">📸 Choose a photo</label>
+            <input id="file" type="file" accept="image/*" />
+            <div class="tiny" style="margin-top:10px">Nothing is saved yet. Refresh wipes it. (For now.)</div>
+          </div>
+        </div>
+        <footer>CrateJuice™ 2025 · PLUR</footer>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 10px;font-size:20px">Preview</h2>
+        <div id="preview" class="preview" style="display:none"></div>
+        <div id="empty" class="tiny" style="padding:12px;border:1px solid var(--line);border-radius:14px;opacity:.7">
+          No photo yet. Feed the machine.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const drop = document.getElementById('drop');
+    const fileInput = document.getElementById('file');
+    const preview = document.getElementById('preview');
+    const empty = document.getElementById('empty');
+
+    function show(file){
+      if(!file) return;
+      if(!file.type.startsWith('image/')) return alert('Image files only, ya goose 🪿');
+      const url = URL.createObjectURL(file);
+      preview.innerHTML = `<img src="${url}" alt="Snap preview">`;
+      preview.style.display = 'block';
+      empty.style.display = 'none';
+    }
+
+    fileInput.addEventListener('change', (e)=> show(e.target.files[0]));
+
+    ['dragenter','dragover'].forEach(ev=>{
+      drop.addEventListener(ev, (e)=>{ e.preventDefault(); drop.classList.add('drag'); });
+    });
+    ['dragleave','drop'].forEach(ev=>{
+      drop.addEventListener(ev, (e)=>{ e.preventDefault(); drop.classList.remove('drag'); });
+    });
+    drop.addEventListener('drop', (e)=> show(e.dataTransfer.files[0]));
+  </script>
+</body>
+</html>
